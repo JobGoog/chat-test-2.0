@@ -28,11 +28,11 @@ export default class Chat {
           if (data.status === 'error') {
             alert(data.message);
           } else if (data.status === 'ok') {
-            this.formNickname.removeEventListener('click', handlerClick); //удаляем обработчик формы
-            this.modalNickname.remove(); //удаляем окно никнейма
-            this.ModalForm.createmodalChat(); //создаем окно чата
-            this.area(); //запускаем метод работы с чатом
-            this.sendMessage(data.user.name); //запускаем метод отправки сообщений
+            this.formNickname.removeEventListener('click', handlerClick);
+            this.modalNickname.remove();
+            this.ModalForm.createmodalChat();
+            this.area();
+            this.sendMessage(data.user.name);
             this.closingPage(data.user.name);
           }
           return;
@@ -41,27 +41,27 @@ export default class Chat {
     this.formNickname.addEventListener('submit', handlerClick);
   }
 
-  //Метод для работы с полем чата
+
   area() {
     this.ws = new WebSocket(
       'wss://eventsource-websockets-backendba.onrender.com'
     );
 
-    this.userArea = this.container.querySelector('.modalChat__user'); //Поле списка ползователей
-    this.chatArea = this.container.querySelector('.modalChat__chat'); //Поле чата ползователей
+    this.userArea = this.container.querySelector('.modalChat__user');
+    this.chatArea = this.container.querySelector('.modalChat__chat');
 
     this.ws.addEventListener('message', (e) => {
       const data = JSON.parse(e.data);
       this.userContainer = document.querySelectorAll('.user');
 
-      //Очистка поля списка Юзеров
+
       if (!data.type) {
         for (let i = 0; i < this.userContainer.length; i++) {
-          this.userContainer[i].remove(); //то очищаем поле
+          this.userContainer[i].remove();
         }
       }
 
-      //Добавление юзеров в поле списка юзеров
+
       for (let i = 0; i < data.length; i++) {
         let elem = data[i].name;
         if (elem === this.you) {
@@ -71,7 +71,7 @@ export default class Chat {
         this.userArea.insertAdjacentHTML('beforeEnd', this.userHTML);
       }
 
-      //Добавление переписки в поле чата
+
       if (data.user != undefined) {
         if (data.user === this.you) {
           this.chatArea.insertAdjacentHTML(
@@ -88,10 +88,10 @@ export default class Chat {
     });
   }
 
-  //Метод отправить сообщение
+
   sendMessage(name) {
-    this.addMessage = this.container.querySelector('[data-id="addMessage"]'); //фома
-    this.addMessageInput = this.addMessage.querySelector('[data-id="message"]'); //поле ввода
+    this.addMessage = this.container.querySelector('[data-id="addMessage"]'); 
+    this.addMessageInput = this.addMessage.querySelector('[data-id="message"]');
     this.addMessage.addEventListener('submit', (e) => {
       e.preventDefault();
       this.ws.send(
@@ -105,7 +105,7 @@ export default class Chat {
     });
   }
 
-  //Метод закрытия документа
+
   closingPage(name) {
     window.addEventListener('unload', () => {
       this.ws.send(
