@@ -15,16 +15,20 @@ export default class Chat {
     this.formNickname = this.modalNickname.querySelector('form');
     this.inputNickname = this.formNickname.querySelector('input');
 
-
     const handlerClick = (e) => {
       e.preventDefault();
       this.you = this.inputNickname.value;
+      console.log('Nickname:', this.you); // тест
       fetch('https://chat-test-2-0.onrender.com/new-user', {
         method: 'POST',
         body: JSON.stringify({ name: `${this.inputNickname.value}` }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
         .then((response) => response.json())
         .then((data) => {
+          console.log('Response:', data); // тест
           if (data.status === 'error') {
             alert(data.message);
           } else if (data.status === 'ok') {
@@ -36,11 +40,13 @@ export default class Chat {
             this.closingPage(data.user.name);
           }
           return;
+        })
+        .catch((error) => {
+          console.error('Error:', error); // тест
         });
     };
     this.formNickname.addEventListener('submit', handlerClick);
   }
-
 
   area() {
     this.ws = new WebSocket(
@@ -54,23 +60,20 @@ export default class Chat {
       const data = JSON.parse(e.data);
       this.userContainer = document.querySelectorAll('.user');
 
-
       if (!data.type) {
         for (let i = 0; i < this.userContainer.length; i++) {
           this.userContainer[i].remove();
         }
       }
 
-
       for (let i = 0; i < data.length; i++) {
         let elem = data[i].name;
         if (elem === this.you) {
-          elem = 'YOU'; //то имя регистрации меняем на "YOU"
+          elem = 'YOU'; 
         }
         this.userHTML = `<div class = "user">${elem}</div>`;
         this.userArea.insertAdjacentHTML('beforeEnd', this.userHTML);
       }
-
 
       if (data.user != undefined) {
         if (data.user === this.you) {
@@ -88,7 +91,6 @@ export default class Chat {
     });
   }
 
-
   sendMessage(name) {
     this.addMessage = this.container.querySelector('[data-id="addMessage"]'); 
     this.addMessageInput = this.addMessage.querySelector('[data-id="message"]');
@@ -104,7 +106,6 @@ export default class Chat {
       this.addMessageInput.value = '';
     });
   }
-
 
   closingPage(name) {
     window.addEventListener('unload', () => {
