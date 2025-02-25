@@ -10,7 +10,7 @@ module.exports = merge(common, {
     historyApiFallback: true,
     open: true,
     compress: true,
-    allowedHosts: ['chat-test-2-0.onrender.com'],
+    allowedHosts: ['chat-test-2-0.onrender.com','localhost:8080'],
   },
 
   plugins: [

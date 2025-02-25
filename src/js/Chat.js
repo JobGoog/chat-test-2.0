@@ -19,13 +19,12 @@ export default class Chat {
       e.preventDefault();
       this.you = this.inputNickname.value;
       console.log('Nickname:', this.you); // тест
-      fetch('https://chat-test-2-0.onrender.com/new-user', {
-        method: 'POST',
-        body: JSON.stringify({ name: `${this.inputNickname.value}` }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+
+      this.ws.send(JSON.stringify({
+        type: 'new-user',
+        name: this.inputNickname.value,
+      }))
+      
         .then((response) => response.json())
         .then((data) => {
           console.log('Response:', data); // тест
