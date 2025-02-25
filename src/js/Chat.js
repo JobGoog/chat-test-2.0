@@ -52,7 +52,7 @@ export default class Chat {
 
   area() {
     this.ws = new WebSocket(
-      'wss://chat-test-2-0.onrender.com'
+      'wss://chat-test-2-0.onrender.com/ws'
     );
 
     this.userArea = this.container.querySelector('.modalChat__user');
