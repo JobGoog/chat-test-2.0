@@ -15,11 +15,11 @@ export default class Chat {
     this.formNickname = this.modalNickname.querySelector('form'); 
     this.inputNickname = this.formNickname.querySelector('input'); 
 
-
+ 
     const handlerClick = (e) => {
       e.preventDefault();
       this.you = this.inputNickname.value;
-      fetch('https://eventsource-websockets-backendba.onrender.com/new-user', {
+      fetch('https://chat-test-2-0.onrender.com/new-user', {
         method: 'POST',
         body: JSON.stringify({ name: `${this.inputNickname.value}` }),
       })
@@ -44,7 +44,7 @@ export default class Chat {
 
   area() {
     this.ws = new WebSocket(
-      'wss://eventsource-websockets-backendba.onrender.com'
+      'wss://chat-test-2-0.onrender.com'
     );
 
     this.userArea = this.container.querySelector('.modalChat__user');
