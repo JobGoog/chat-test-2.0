@@ -13,33 +13,38 @@ export default class Chat {
     this.formNickname = this.modalNickname.querySelector('form');
     this.inputNickname = this.formNickname.querySelector('input');
 
+    // Обработчик клика по кнопке «Продолжить» (submit формы)
     const handlerClick = (e) => {
       e.preventDefault();
       this.you = this.inputNickname.value;
 
-      // Создаём WebSocket-соединение
+      // 1. Создаём WebSocket-соединение (без fetch)
       this.ws = new WebSocket('wss://chat-test-2-0.onrender.com/ws');
 
-      // Как только соединение установлено, отправляем запрос на регистрацию
+      // 2. Когда соединение установлено, отправляем "new-user"
       this.ws.onopen = () => {
         this.ws.send(JSON.stringify({
           type: 'new-user',
-          name: this.inputNickname.value,
+          name: this.you,
         }));
       };
 
-      // Обрабатываем ответ на регистрацию
+      // 3. Ждём ответ «login» от сервера
       const loginHandler = (event) => {
         const data = JSON.parse(event.data);
+
+        // Допустим, сервер отвечает: { type: 'login', status: 'ok', user: { name: ... } }
         if (data.type === 'login') {
           if (data.status === 'error') {
+            // Ник занят или другая ошибка
             alert(data.message);
           } else if (data.status === 'ok') {
+            // Логин успешен
             this.ws.removeEventListener('message', loginHandler);
             this.modalNickname.remove();
             this.ModalForm.createmodalChat();
-            this.area();
-            this.sendMessage(data.user.name);
+            this.area(); // запускаем логику отображения пользователей
+            this.sendMessage(data.user.name); // отправка сообщений
             this.closingPage(data.user.name);
           }
         }
@@ -50,40 +55,17 @@ export default class Chat {
     this.formNickname.addEventListener('submit', handlerClick);
   }
 
+  // Обновление списка пользователей, приём/отправка сообщений
   area() {
+    // Здесь this.ws уже создан
     this.userArea = this.container.querySelector('.modalChat__user');
     this.chatArea = this.container.querySelector('.modalChat__chat');
 
     this.ws.addEventListener('message', (e) => {
       const data = JSON.parse(e.data);
-      this.userContainer = document.querySelectorAll('.user');
 
-      if (!data.type) {
-        this.userContainer.forEach((el) => el.remove());
-      }
-
-      data.forEach((user) => {
-        let elem = user.name;
-        if (elem === this.you) {
-          elem = 'YOU';
-        }
-        const userHTML = `<div class="user">${elem}</div>`;
-        this.userArea.insertAdjacentHTML('beforeEnd', userHTML);
-      });
-
-      if (data.user !== undefined) {
-        if (data.user === this.you) {
-          this.chatArea.insertAdjacentHTML(
-            'beforeEnd',
-            `<p class="chatRight">YOU: ${data.msg}</p>`
-          );
-        } else {
-          this.chatArea.insertAdjacentHTML(
-            'beforeEnd',
-            `<p class="chatUser">${data.user}: ${data.msg}</p>`
-          );
-        }
-      }
+      // Пример: если сервер рассылает массив пользователей (data.length) или { user, msg } и т. п.
+      // Логика зависит от формата, который сервер отправляет
     });
   }
 
@@ -106,7 +88,7 @@ export default class Chat {
       this.ws.send(JSON.stringify({
         msg: 'вышел',
         type: 'exit',
-        user: { name }
+        user: { name },
       }));
     });
   }
