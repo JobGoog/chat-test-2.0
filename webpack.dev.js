@@ -10,6 +10,7 @@ module.exports = merge(common, {
     historyApiFallback: true,
     open: true,
     compress: true,
+    port: 3000,
     allowedHosts: ['chat-test-2-0.onrender.com'],
   },
 
