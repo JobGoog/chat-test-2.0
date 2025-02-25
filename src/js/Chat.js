@@ -9,6 +9,9 @@ export default class Chat {
 
   init() {
     this.ModalForm.createmodalNickname();
+    this.ws = new WebSocket(
+      'wss://chat-test-2-0.onrender.com'
+    );
     this.modalNickname = document.querySelector(
       '[data-widget="modalNickname"]'
     );
@@ -24,7 +27,7 @@ export default class Chat {
         type: 'new-user',
         name: this.inputNickname.value,
       }))
-      
+
         .then((response) => response.json())
         .then((data) => {
           console.log('Response:', data); // тест
