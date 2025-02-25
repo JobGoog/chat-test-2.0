@@ -4,3 +4,5 @@
 
 
 [Посмотреть на GitHub Pages](https://jobgoog.github.io/chat-test-2.0/)
+
+[Посмотреть на Render](https://chat-test-2-0.onrender.com)
