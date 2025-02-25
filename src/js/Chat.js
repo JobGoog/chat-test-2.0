@@ -19,7 +19,7 @@ export default class Chat {
     const handlerClick = (e) => {
       e.preventDefault();
       this.you = this.inputNickname.value;
-      fetch('https://chat-test-2-0.onrender.com/new-user', {
+      fetch('https://chat-test-2-0.onrender.com', {
         method: 'POST',
         body: JSON.stringify({ name: `${this.inputNickname.value}` }),
       })
